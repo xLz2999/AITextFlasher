@@ -4,6 +4,7 @@ using Avalonia.Interactivity;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using HtmlToOpenXml;
+using System.Threading.Tasks;
 using Markdig;
 using System.IO;
 
@@ -14,6 +15,12 @@ namespace AITextFlasher
         public MainWindow()
         {
             InitializeComponent();
+        }
+        // 🌟 新功能 1：一键清空按钮
+        private void BtnClear_Click(object sender, RoutedEventArgs e)
+        {
+            InputTextBox.Text = "";
+            StatusText.Text = ""; // 同时清空提示语
         }
 
         // 按钮1：转纯文本并复制到剪贴板
@@ -30,7 +37,13 @@ namespace AITextFlasher
             if (clipboard != null)
             {
                 await clipboard.SetTextAsync(plainText);
+                // 🌟 新功能 2：阅后即焚提示语
                 StatusText.Text = "✅ 纯文本已复制！";
+                await Task.Delay(3000); // 魔法指令：让程序偷偷等待 3 秒
+                if (StatusText.Text == "✅ 纯文本已复制！") // 防止这 3 秒内你点了别的按钮
+                {
+                    StatusText.Text = "";
+                }
             }
         }
 
@@ -73,7 +86,13 @@ namespace AITextFlasher
                         await generatedDocument.CopyToAsync(fileStream);
                     }
                 }
+                // 🌟 新功能 2：阅后即焚提示语
                 StatusText.Text = "✅ Word已成功导出！";
+                await Task.Delay(3000); // 等待 3 秒
+                if (StatusText.Text == "✅ Word已成功导出！")
+                {
+                    StatusText.Text = "";
+                }
             }
         }
     }
